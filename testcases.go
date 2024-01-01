@@ -2,8 +2,6 @@ package testingutil
 
 import (
 	"testing"
-
-	"github.com/RyuaNerin/go-krypto/internal"
 )
 
 type CipherSize struct {
@@ -67,27 +65,27 @@ type BlockTestCase struct {
 
 func (btc *BlockTestCase) parse() {
 	if btc.KeyBytes == nil {
-		btc.KeyBytes = internal.HB(btc.Key)
+		btc.KeyBytes = h2b(btc.Key)
 		if btc.Reverse {
-			btc.KeyBytes = internal.Reverse(btc.KeyBytes)
+			btc.KeyBytes = reverse(btc.KeyBytes)
 		}
 	}
 	if btc.PlainBytes == nil {
-		btc.PlainBytes = internal.HB(btc.Plain)
+		btc.PlainBytes = h2b(btc.Plain)
 		if btc.Reverse {
-			btc.PlainBytes = internal.Reverse(btc.PlainBytes)
+			btc.PlainBytes = reverse(btc.PlainBytes)
 		}
 	}
 	if btc.SecureBytes == nil {
-		btc.SecureBytes = internal.HB(btc.Secure)
+		btc.SecureBytes = h2b(btc.Secure)
 		if btc.Reverse {
-			btc.SecureBytes = internal.Reverse(btc.SecureBytes)
+			btc.SecureBytes = reverse(btc.SecureBytes)
 		}
 	}
 	if btc.IVBytes == nil {
-		btc.IVBytes = internal.HB(btc.IV)
+		btc.IVBytes = h2b(btc.IV)
 		if btc.Reverse {
-			btc.IVBytes = internal.Reverse(btc.IVBytes)
+			btc.IVBytes = reverse(btc.IVBytes)
 		}
 	}
 }
@@ -103,9 +101,9 @@ type HashTestCase struct {
 
 func (ht *HashTestCase) parse() {
 	if ht.MsgBytes == nil {
-		ht.MsgBytes = internal.HB(ht.Msg)
+		ht.MsgBytes = h2b(ht.Msg)
 	}
 	if ht.MDBytes == nil {
-		ht.MDBytes = internal.HB(ht.MD)
+		ht.MDBytes = h2b(ht.MD)
 	}
 }
