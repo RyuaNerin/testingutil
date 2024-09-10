@@ -129,8 +129,12 @@ func BTTC(
 	dstA := make([]byte, srcSize)
 	dstB := make([]byte, srcSize)
 
+	l := srcSize
+
 	for i := 0; i < continusBlockTestIter; i++ {
-		l := randomInt(srcSize, rndFitSize)
+		if rndFitSize != 0 {
+			l = randomInt(srcSize, rndFitSize)
+		}
 
 		DoA(c, dstA[:l], src[:l])
 		DoB(c, dstB[:l], src[:l])
