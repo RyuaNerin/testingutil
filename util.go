@@ -7,25 +7,29 @@ import (
 	"strings"
 )
 
-func randomInt(maxValue, fitValue int) int {
+// [1, maxValue) random int
+func randomInt(maxValue, step int) int {
 	var buf [4]byte
 	rnd.Read(buf[:])
+	buf[0] &= 0x7f
 
-	if fitValue == 0 {
-		v := binary.BigEndian.Uint32(buf[:]) % uint32(maxValue)
-		return int(v)
+	if step <= 1 {
+		return 1 + int(binary.BigEndian.Uint32(buf[:]))%(maxValue-1)
 	}
 
-	div := uint32(maxValue) / uint32(fitValue)
-	if maxValue%fitValue != 0 {
-		div++
+	const minValue = 1
+	minValueStep := ((minValue-1)/step + 1) * step
+	if minValueStep == 0 {
+		minValueStep = step
 	}
 
-	rndMax := uint32(((1 << 31) / div) * div)
+	maxValueStep := ((maxValue - 1) / step) * step
 
-	v := binary.BigEndian.Uint32(buf[:]) % rndMax
+	count := (maxValueStep-minValueStep)/step + 1
 
-	return int((v % div) * uint32(fitValue))
+	n := int(binary.BigEndian.Uint32(buf[:])) % count
+
+	return minValueStep + n*step
 }
 
 func h(s string) string {
