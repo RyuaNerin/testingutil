@@ -1,10 +1,32 @@
 package testingutil
 
 import (
+	"encoding/binary"
 	"encoding/hex"
 	"math/big"
 	"strings"
 )
+
+func randomInt(maxValue, fitValue int) int {
+	var buf [4]byte
+	rnd.Read(buf[:])
+
+	if fitValue == 0 {
+		v := binary.BigEndian.Uint32(buf[:]) % uint32(maxValue)
+		return int(v)
+	}
+
+	div := uint32(maxValue) / uint32(fitValue)
+	if maxValue%fitValue != 0 {
+		div++
+	}
+
+	rndMax := uint32(((1 << 31) / div) * div)
+
+	v := binary.BigEndian.Uint32(buf[:]) % rndMax
+
+	return int((v % div) * uint32(fitValue))
+}
 
 func h(s string) string {
 	var sb strings.Builder

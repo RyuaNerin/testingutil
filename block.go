@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"crypto/cipher"
 	"crypto/rand"
-	"encoding/binary"
 	"encoding/hex"
 	"testing"
 )
 
-type BI func(key, additional []byte) (interface{}, error) // Block Init
-type BD func(c interface{}, dst, src []byte)              // Block Do
+type (
+	BI func(key, additional []byte) (interface{}, error) // Block Init
+	BD func(c interface{}, dst, src []byte)              // Block Do
+)
 
 func CE(data interface{}, dst, src []byte) { data.(cipher.Block).Encrypt(dst, src) } // Cipher.Encrypt
 func CD(data interface{}, dst, src []byte) { data.(cipher.Block).Decrypt(dst, src) } // Cipher.Decrypt
@@ -128,16 +129,8 @@ func BTTC(
 	dstA := make([]byte, srcSize)
 	dstB := make([]byte, srcSize)
 
-	l := srcSize
-	lRaw := make([]byte, 4)
-
 	for i := 0; i < continusBlockTestIter; i++ {
-		if rndFitSize != 0 {
-			rnd.Read(lRaw)
-			l = int(binary.LittleEndian.Uint32(lRaw))
-			l = l % (srcSize/rndFitSize - 1)
-			l = (1 + l) * rndFitSize
-		}
+		l := randomInt(srcSize, rndFitSize)
 
 		DoA(c, dstA[:l], src[:l])
 		DoB(c, dstB[:l], src[:l])
